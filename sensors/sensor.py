@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Any, Callable, List, Optional, Protocol, Union
 import numpy as np
 
-# -- Helper RNG --
+
 def default_rng():
     return np.random.default_rng()
 
@@ -73,7 +73,7 @@ class Sensor(ABC):
             return self.read()
         return self._last_value
 
-# --- Implementacje czujników ---
+
 class TemperatureSensor(Sensor):
     def _generate(self) -> float:
         mean = (self.config.min_value + self.config.max_value) / 2
@@ -101,7 +101,7 @@ class PressureSensor(Sensor):
 
 class LightSensor(Sensor):
     def _generate(self) -> float:
-        # symulacja zmian oświetlenia: sinusoidalny cykl dnia
+
         t = np.mod(self.config.frequency, 24)
         lux = (np.sin(2 * np.pi * t / 24) + 1) / 2 * (self.config.max_value - self.config.min_value) + self.config.min_value
         noise = self._rng.normal(0, (self.config.max_value - self.config.min_value) * 0.05)
@@ -111,7 +111,7 @@ class LightSensor(Sensor):
 
 class AirQualitySensor(Sensor):
     def _generate(self) -> float:
-        # AQI symulacja: mieszanka losowa z okazjonalnymi pikami
+
         base = self._rng.uniform(self.config.min_value, self.config.max_value)
         spike = self._rng.choice([0, self._rng.uniform(50, 150)], p=[0.9, 0.1])
         return float(np.clip(base + spike,
@@ -120,7 +120,7 @@ class AirQualitySensor(Sensor):
 
 class AccelerometerSensor(Sensor):
     def _generate(self) -> float:
-        # trzyelementowy wektor przyspieszenia (X, Y, Z) ze zwracaniem długości wektora
+
         vec = self._rng.uniform(-1, 1, size=3)
         magnitude = np.linalg.norm(vec) * (self.config.max_value)
         return float(np.clip(magnitude,
@@ -129,6 +129,6 @@ class AccelerometerSensor(Sensor):
 
 class ProximitySensor(Sensor):
     def _generate(self) -> float:
-        # symulacja odległości z progami
+
         val = self._rng.uniform(self.config.min_value, self.config.max_value)
         return float(val)
