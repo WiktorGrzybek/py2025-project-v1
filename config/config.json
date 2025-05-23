@@ -1,0 +1,5 @@
+{
+    "log_file": "logs/sensor_data.csv",
+    "max_lines": 1000,
+    "backup_count": 5
+}
